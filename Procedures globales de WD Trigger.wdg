@@ -1,0 +1,176 @@
+#To edit and compare internal_properties, use WINDEV integrated tools.
+#Internal properties refer to the properties of controls in windows, reports, etc.
+info :
+ name : Procedures globales de WD Trigger
+ major_version : 28
+ minor_version : 0
+ type : 7
+ description : ""
+ subtype : 0
+procedure_set :
+ identifier : 0x10f6996600e8b939
+ internal_properties : CAAAAAgAAABGLu41kG7fjQV3iS4F72qmnKaNh5694reolNKIW0iw
+ code_elements :
+  internal_properties : CAAAAAgAAAB5CXCspM4YYeVPjVLN4ZtzSpBbA9wzt4kXRhoWaY+nyvrAw/0mcIAzU07yqqHyk8YO38z7nzmKsUqDu2CQw22R5O05IjZ8rfUwEKRF4WQwh7cl5ZtCZaub77/zj0C9tOnleTagE2H1gAeq725f1fTQD3eeaVJzu6f2P531tEUSc99CWt9tu/LOYkYNFwNcNR8LrSkcHCcVf8ML04o9wUdTwPNgwTv2u61yOkf39H5HOYt5mRUF3eCKwtqXgJgxpFpsCf1/EjwYXrfHN3lFSxpifLzzWxw+APAgTSrcIJv6E252HhIfDRJ0kKr6mk799rJlsiRgGmprJoi/eFs7UT0aw3CgLrKsg+WXoA7B8QtVst0SYMOR14iAYVIaz4nwlAx11PWcWyf7sx91L694PNvVp290K7FEOxPzua7DPr6vQBGuIrzIWsmfe+mx+29yiybTS6FMEWRRX96k+QErSBGaCsgjZlFsMnKdmyMArIIGi5dscqWntdWgzT6biTQ+8dvX8WQdDm6Gbo/lvPGf0btWFvCInZCtcEPrEFli3d2YxUnKaR2exWdljoTHdUeASWjuu/OT+vIVAVzklVqcd4YcgiLxvnw140bVPfnyHRAjzziHjBurFIIsi1E/7eho/fAD7oL6bleeCmIxEuZC
+  type_code : 31
+  p_codes : []
+  procedures :
+   -
+     name : Proc_Trigger
+     internal_properties : CAAAAAgAAAArw60gHldOe9Jiqq5St8+yYd5DpyNBHa30cpWFL7SrHrCPG4PuntXUDsV+Z1NXdODDXaXRIxBujvCAx8roOzxUHxvSqQVZXX5dASdz9NIE8L5gLTA+NoPacDkskXf1xnB0UcXxdTYqFbv5NOEgpWXbW1A0bayUxg45aJar6jHX3gz0EZU9SE2MUCKpGW//DDOhfARFk+UwXJjDC0a0XWIqGwMjpaTnlKOaNYGxvARQrw1Jphcq+tT1S6UFwtkG9+E3h2R/bjPMntmBtz9/zJw9Us8jjiA/9ZrGvQeGsGVK9Bj+IVOaojHWx08H/7ce
+     procedure_id : 1222333012258699592
+     type_code : 15
+     code : |1+
+      Procédure Proc_Trigger()
+      
+      // Selon le trigger appelant
+      selon majuscule(h.Action)
+      	cas "A"  // Trigger Avant
+      		// Selon la fonction appelante
+      		selon majuscule(h.FonctionTrigger)
+      			cas "HAJOUTE"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da0001§>)
+      			cas "HMODIFIE"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da0003§>)
+      			cas "HSUPPRIME"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da0005§>)	
+      				
+      				//1 : &Supprimer
+      				//2 : &Ne pas supprimer
+      				SELON Dialogue(<§?168A10AC010F39A7§>)
+      					
+      					// &Supprimer
+      					CAS 1
+      					//On ne fait rien		
+      								
+      					// &Ne pas supprimer
+      					CAS 2
+      						// Abandon de l'action
+      						H.AFaire = "A"
+      				FIN
+      				
+      			
+      		FIN
+      				
+      		si gsDroits<>"E" alors
+      			erreur(<§@3b8b5c017aca59da0007§>)
+      			// Abandon de l'action
+      			h.afaire = "A"
+      		fin		
+      		
+      	cas "P"  // Trigger Après
+      		nIdFichier est un entier
+      		sLigne est une chaine
+      		
+      		// fichier de log
+      		nIdFichier = fouvre(completerep(frepexe())+"journal.log", foajout+foCréationSiInexistant)		
+      		sLigne = RéseauUtilisateur()+tab+dateverschaine(Datedujour())+tab+heureverschaine(Maintenant())
+      		
+      		// Selon la fonction appelante
+      		selon majuscule(h.FonctionTrigger)
+      			cas "HAJOUTE"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da0009§>)
+      				sLigne += tab+<§@3b8b5c017aca59da000a§>
+      				info(<§@3b8b5c017aca59da000b§>)
+      				
+      			cas "HMODIFIE"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da000c§>)
+      				sLigne += tab+<§@3b8b5c017aca59da000d§>
+      				info(<§@3b8b5c017aca59da000e§>)
+      				
+      			cas "HSUPPRIME"
+      				si gbTrace alors trace(<§@3b8b5c017aca59da000f§>)
+      				sLigne += tab+<§@3b8b5c017aca59da0010§>
+      				info(<§@3b8b5c017aca59da0011§>)
+      		FIN
+      		
+      		// Fichier de log
+      		fecritligne(nIdFichier, sLigne)
+      		fferme(nIdFichier)
+      		
+      		
+      FIN
+      
+     type : 458752
+  procedure_templates : []
+  property_templates : []
+ code_parameters :
+  internal_properties : CAAAAAgAAACVGQgYbalU7DKC3oH4ItDrjtcTHXXV/EuH8q0IbhyQlw==
+resources :
+ string_res :
+  identifier : 0x3b8b5c017aca59da
+  internal_properties : CAAAAAgAAACm76HWfKGWp33VjXInA4cRlqArlgTTA862QGt72W2ld5Y=
+  strings :
+   -
+     text :
+      fr-FR : "Trigger avant : Ajout"
+     index : 1
+   -
+     text :
+      fr-FR : "Trigger avant : Modification"
+     index : 3
+   -
+     text :
+      fr-FR : "Trigger avant : Suppression"
+     index : 5
+   -
+     text :
+      fr-FR : Vous n'êtes pas autorisé à écrire dans le fichier.
+     index : 7
+   -
+     text :
+      fr-FR : "Trigger après : Ajout"
+     index : 9
+   -
+     text :
+      fr-FR : Ajout
+     index : 10
+   -
+     text :
+      fr-FR : L'ajout  a été effectué
+     index : 11
+   -
+     text :
+      fr-FR : "Trigger après : Modification"
+     index : 12
+   -
+     text :
+      fr-FR : Modification
+     index : 13
+   -
+     text :
+      fr-FR : La modification a été effectuée
+     index : 14
+   -
+     text :
+      fr-FR : "Trigger après : Suppression"
+     index : 15
+   -
+     text :
+      fr-FR : Suppression
+     index : 16
+   -
+     text :
+      fr-FR : La suppression a été effectuée
+     index : 17
+ dialogs :
+  -
+    identifier : 0x168a10ac010f39a7
+    internal_properties : CAAAAAgAAADK6zrgbwza9eeCRXAIzyUGgw01vXhIZ0gp8Hbm3YKVqcWS9+a9jrQ+bus3IEoPRaJJWYhrKMVTima8+0VELbmARbDjYTK0Qcii
+    label :
+     fr-FR : Voulez-vous vraiment supprimer cet enregistrement ?
+    image : {}
+    cancel_button : 1
+    buttons :
+     -
+       label :
+        fr-FR : "&Supprimer"
+       image : {}
+       value : 1
+     -
+       label :
+        fr-FR : "&Ne pas supprimer"
+       image : {}
+       value : 2
+custom_note :
+ internal_properties : CAAAAAgAAABtB9HWVzrXO2+4NDRVK0vmzaNKrCKqH1DBX30lMmGZ
